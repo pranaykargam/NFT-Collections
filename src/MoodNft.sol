@@ -5,9 +5,13 @@ import {ERC721} from "@openzeppelin/token/ERC721/ERC721.sol";
 import {Base64} from "@openzeppelin/utils/Base64.sol";
 
 contract MoodNft is ERC721 {
-    uint256 private s_tokenCounter;
-    string private i_sadSvgImageUri;
-    string private i_happySvgImageUri;
+
+    /* errors */
+    error MoodNft__CanNotFlipMoodIfNotOwner();
+    
+    uint256 private sTokenCounter;
+    string private iSadSvgImageUri;
+    string private iHappySvgImageUri;
 
     enum Mood {
         HAPPY,
@@ -20,35 +24,44 @@ contract MoodNft is ERC721 {
         string memory sadSvg,
         string memory happySvg
     ) ERC721("MoodNft", "MN") {
-        s_tokenCounter = 0;
-        i_sadSvgImageUri = svgToImageURI(sadSvg);
-        i_happySvgImageUri = svgToImageURI(happySvg);
+        sTokenCounter = 0;
+        iSadSvgImageUri = svgToImageUri(sadSvg);
+        iHappySvgImageUri = svgToImageUri(happySvg);
     }
 
-    function svgToImageURI(string memory svg)
-        public
-        pure
-        returns (string memory)
-    {
-        // data:image/svg+xml;base64,<base64-encoded-svg>
-        string memory baseURL = "data:image/svg+xml;base64,";
-        string memory svgBase64Encoded = Base64.encode(bytes(svg));
-        return string(abi.encodePacked(baseURL, svgBase64Encoded));
+    // function svgToImageURI(string memory svg)
+    //     public
+    //     pure
+    //     returns (string memory)
+    // {
+    //     // data:image/svg+xml;base64,<base64-encoded-svg>
+    //     string memory baseurl = "data:image/svg+xml;base64,";
+    //     string memory svgBase64Encoded = Base64.encode(bytes(svg));
+    //     return string(abi.encodePacked(baseurl, svgBase64Encoded));
+    // }
+
+    function svgToImageUri(string memory svg) public pure returns (string memory) {
+    string memory svgBase64Encoded = Base64.encode(bytes(svg));
+    return string(
+        abi.encodePacked("data:image/svg+xml;base64,", svgBase64Encoded)
+    );
     }
 
     function mintNft() public returns (uint256) {
-        uint256 newTokenId = s_tokenCounter;
+        uint256 newTokenId = sTokenCounter;
         _safeMint(msg.sender, newTokenId);
         s_tokenIdToMood[newTokenId] = Mood.HAPPY;
-        s_tokenCounter += 1;
+        sTokenCounter += 1;
         return newTokenId;
     }
 
+    /*//////////////////////////////////////////////////////////////
+                                FLIPMOOD
+    //////////////////////////////////////////////////////////////*/
     function flipMood(uint256 tokenId) public {
-        address owner = ownerOf(tokenId);
-        // Only owner or approved can flip
-        _checkAuthorized(owner, msg.sender, tokenId);
-
+        if (ownerOf(tokenId) != msg.sender) {
+            revert MoodNft__CanNotFlipMoodIfNotOwner();
+        }
         if (s_tokenIdToMood[tokenId] == Mood.HAPPY) {
             s_tokenIdToMood[tokenId] = Mood.SAD;
         } else {
@@ -56,6 +69,13 @@ contract MoodNft is ERC721 {
         }
     }
 
+
+// function flipMood(uint256 tokenId) public {
+//     if (!_exists(tokenId)) revert MoodNft__NotTokenOwner();  // Explicit check
+//     address owner = ownerOf(tokenId);
+//     _checkAuthorized(owner, msg.sender, tokenId);  // Your auth logic
+//     // ... mood flip
+// }
     function _baseURI() internal pure override returns (string memory) {
         // data:application/json;base64,<base64-encoded-json>
         return "data:application/json;base64,";
@@ -70,9 +90,9 @@ contract MoodNft is ERC721 {
         // standard OZ 721 check
         _requireOwned(tokenId);
 
-        string memory imageURI = i_happySvgImageUri;
+        string memory imageURI = iHappySvgImageUri;
         if (s_tokenIdToMood[tokenId] == Mood.SAD) {
-            imageURI = i_sadSvgImageUri;
+            imageURI = iSadSvgImageUri;
         }
 
         bytes memory metadata = abi.encodePacked(
