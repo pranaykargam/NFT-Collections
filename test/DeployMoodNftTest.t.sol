@@ -6,6 +6,4 @@ import {MoodNft} from "../src/MoodNft.sol";
 import {Base64} from "@openzeppelin/utils/Base64.sol";
 import {Test} from "forge-std/Test.sol";
 
-contract DeployMoodNftTest is Test {
-    
-}
+contract DeployMoodNftTest is Test {}
