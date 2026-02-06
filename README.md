@@ -15,3 +15,10 @@ example
 
 data:image/svg+xml;base64,
 PCFET0NUWVBFIGh0bWw+CjxodG1sPgo8Ym9keT4KCjxoMT5NeSBmaXJzdCBTVkc8L2gxPgoKPHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjEwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8dGV4dCB4PSIxMCIgeT0iNjAiIGZpbGw9ImdyZWVuIiBmb250LXNpemU9IjMyIj4KICAgIGh5eSEhISBuZnRzIGFyZSBmdW4KICA8L3RleHQ+CiAgU29ycnksIHlvdXIgYnJvd3NlciBkb2VzIG5vdCBzdXBwb3J0IGlubGluZSBTVkcuCjwvc3ZnPgoKPC9ib2R5Pgo8L2h0bWw+Cg==
+
+
+`final`
+
+01. check the address (read the function)
+02. check the function selector
+03. ecode the call data (check the parameters)
