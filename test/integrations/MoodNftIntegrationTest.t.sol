@@ -35,5 +35,14 @@ contract MoodNftIntegrationTest is Test {
 
         assertEq(uint256(moodNft.getMood(0)), uint256(MoodNft.Mood.SAD));
     }
+
+    //  function testFlipTokenToSadImage() public {
+    //     vm.startPrank(USER);
+    //     moodNft.mintNft();
+    //     moodNft.flipMood(0);
+    //     vm.stopPrank();
+
+    //     assertEq(uint256(moodNft.getMood(0)), uint256(MoodNft.Mood.SAD));
+    // }
 }
 
